@@ -1,34 +1,49 @@
 package com.bank.cardmanagement.controller;
 
 import com.bank.cardmanagement.entity.User;
+import com.bank.cardmanagement.service.UserService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
-@RequestMapping("/api/users") // 所有用户接口的统一前缀
+@RequestMapping("/api/users")
+@RequiredArgsConstructor
 public class UserController {
+    private final UserService userService;
 
-    // 用户注册（示例：接收用户信息，返回成功提示）
-    @PostMapping("/register")
-    public String register(@RequestBody User user) {
-        // 第一次迭代：仅返回占位信息，后续迭代实现数据库逻辑
-        return "用户注册成功：" + user.getUsername();
+    // 注册用户
+    @PostMapping
+    public ResponseEntity<User> createUser(@RequestBody User user) {
+        return ResponseEntity.ok(userService.createUser(user));
     }
 
-    // 用户登录（示例：接收账号密码，返回登录状态）
-    @PostMapping("/login")
-    public String login(@RequestParam String username, @RequestParam String password) {
-        // 第一次迭代：仅返回占位信息
-        return "登录成功，用户名：" + username;
-    }
-
-    // 查询用户信息（示例：根据ID查询）
+    // 查询单个用户
     @GetMapping("/{id}")
-    public User getUserById(@PathVariable Long id) {
-        // 第一次迭代：返回模拟数据
-        User user = new User();
-        user.setId(id);
-        user.setUsername("testUser");
-        user.setRealName("测试用户");
-        return user;
+    public ResponseEntity<User> getUserById(@PathVariable Long id) {
+        return userService.getUserById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    // 查询所有用户
+    @GetMapping
+    public ResponseEntity<List<User>> getAllUsers() {
+        return ResponseEntity.ok(userService.getAllUsers());
+    }
+
+    // 更新用户
+    @PutMapping("/{id}")
+    public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody User user) {
+        return ResponseEntity.ok(userService.updateUser(id, user));
+    }
+
+    // 删除用户
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
+        userService.deleteUser(id);
+        return ResponseEntity.noContent().build();
     }
 }
