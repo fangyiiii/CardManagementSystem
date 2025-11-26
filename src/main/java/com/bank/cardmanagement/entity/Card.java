@@ -2,7 +2,7 @@ package com.bank.cardmanagement.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
-
+import java.time.LocalDateTime;  // 导入时间类
 import java.math.BigDecimal;
 
 @Data
@@ -18,6 +18,9 @@ public class Card {
 
     @Column(nullable = false)  // 余额非空，默认0
     private BigDecimal balance = BigDecimal.ZERO;
+
+    @Column(nullable = false)
+    private LocalDateTime createTime = LocalDateTime.now();  // 默认为当前时间
 
     // 关联用户（多对一：一张卡属于一个用户，一个用户可有多张卡）
     @ManyToOne

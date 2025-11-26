@@ -27,6 +27,12 @@ public class UserService {
         return userRepository.findById(id);  // 从数据库查询
     }
 
+    // 根据用户名查询用户（供Controller调用）
+    public Optional<User> getUserByUsername(String username) {
+        // 调用userRepository的findByUsername方法，从数据库查询用户
+        return userRepository.findByUsername(username);
+    }
+
     // 查询所有用户
     public List<User> getAllUsers() {
         return userRepository.findAll();  // 从数据库查询

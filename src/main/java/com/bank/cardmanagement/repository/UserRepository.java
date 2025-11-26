@@ -8,4 +8,7 @@ import java.util.Optional;
 public interface UserRepository extends JpaRepository<User, Long> {
     // 自定义查询：根据用户名查询用户（用于登录/注册校验）
     Optional<User> findByUsername(String username);
+
+    // 新增：判断用户名是否存在的方法
+    boolean existsByUsername(String username);
 }

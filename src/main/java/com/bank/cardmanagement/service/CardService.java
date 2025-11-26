@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
@@ -18,18 +19,23 @@ public class CardService {
     private final CardRepository cardRepository;
     private final UserRepository userRepository;
 
-    // 为用户创建银行卡（自动生成卡号）
-    public Card createCard(Long userId) {
+    // 在CardService中添加两个方法（重载）
+// 1. 支持Swing调用（传userId和初始余额）
+    public Card createCard(Long userId, double initialBalance) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("用户不存在"));
-
-        // 生成16位随机卡号
         String cardNumber = generateCardNumber();
-
         Card card = new Card();
         card.setCardNumber(cardNumber);
-        card.setUser(user);  // 关联用户
-        return cardRepository.save(card);  // 保存到数据库
+        card.setUser(user);
+        card.setBalance(BigDecimal.valueOf(initialBalance)); // 使用传入的初始余额
+        card.setCreateTime(LocalDateTime.now()); // 设置开卡时间
+        return cardRepository.save(card);
+    }
+
+    // 2. 支持CardController调用（只传userId，默认初始余额为0）
+    public Card createCard(Long userId) {
+        return createCard(userId, 0.0); // 调用上面的方法，默认初始余额为0
     }
 
     // 查询所有卡片

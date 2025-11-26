@@ -2,22 +2,28 @@ package com.bank.cardmanagement.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-@Data  // Lombok注解，自动生成getter/setter
-@Entity  // 标记为JPA实体（对应数据库表）
-@Table(name = "t_user")  // 数据库表名
+@Entity
+@Table(name = "t_user")
+@Data
 public class User {
-    @Id  // 主键
-    @GeneratedValue(strategy = GenerationType.IDENTITY)  // 自增主键（MySQL常用）
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(unique = true, nullable = false)  // 用户名唯一、非空
+    @Column(unique = true, nullable = false)
     private String username;
 
-    @Column(nullable = false)  // 密码非空
-    private String password;
+    @Column(nullable = false)
+    private String password; // 存储加密后的密码
 
-    private String realName;  // 真实姓名
-    private String phone;     // 手机号
-    private String idCard;    // 身份证号
+    private String realName;
+    private String phone;
+    private String idCard;
+
+    // 验证密码（登录时调用）
+    public boolean matchesPassword(String rawPassword) {
+        return new BCryptPasswordEncoder().matches(rawPassword, this.password);
+    }
 }
