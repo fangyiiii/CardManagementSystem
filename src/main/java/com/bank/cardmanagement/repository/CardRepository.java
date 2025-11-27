@@ -12,4 +12,9 @@ public interface CardRepository extends JpaRepository<Card, Long> {
 
     // 自定义查询：查询用户名下的所有卡片
     List<Card> findByUser(User user);
+
+    boolean existsByCardNumber(String cardNumber);
+
+    // 根据卡号查询并校验状态（操作前需确保卡片状态正常）
+    Optional<Card> findByCardNumberAndStatus(String cardNumber, Card.CardStatus status);
 }

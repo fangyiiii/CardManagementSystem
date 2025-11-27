@@ -27,11 +27,12 @@ public class CardController {
     }
 
     // 根据卡号查询银行卡
+    // CardController.java 中修改 getCardByNumber 方法
     @GetMapping("/number/{cardNumber}")
     public ResponseEntity<Card> getCardByNumber(@PathVariable String cardNumber) {
-        return cardService.getCardByNumber(cardNumber)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+        // 直接调用service方法（找不到会抛异常，Spring会自动处理为500错误）
+        Card card = cardService.getCardByNumber(cardNumber);
+        return ResponseEntity.ok(card);
     }
 
     // 查询指定用户名下的所有银行卡
